@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/MaritimeOptima/go-ais"
-	"github.com/klyve/go-nmea"
+	"github.com/MaritimeOptima/go-nmea"
 )
 
 func TestWrongType(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/MaritimeOptima/go-ais"
-	nmea "github.com/klyve/go-nmea"
+	nmea "github.com/MaritimeOptima/go-nmea"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/MaritimeOptima/go-ais"
-	nmea "github.com/klyve/go-nmea"
+	nmea "github.com/MaritimeOptima/go-nmea"
 )
 
 // VdmPacket is a packet that can be encoded into or decoded from a NMEA sentence
