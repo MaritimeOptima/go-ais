@@ -1,9 +1,6 @@
 
 # go-ais
 
-[![Build Status](https://travis-ci.org/BertoldVdb/go-ais.svg?branch=master)](https://travis-ci.org/BertoldVdb/go-ais)
-[![Coverage Status](https://coveralls.io/repos/github/BertoldVdb/go-ais/badge.svg?branch=master)](https://coveralls.io/github/BertoldVdb/go-ais?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/bertoldvdb/goais)](https://goreportcard.com/report/github.com/bertoldvdb/goais)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Summary**
@@ -26,7 +23,7 @@ import (
     "fmt"
     "encoding/json"
  
-    ais "github.com/BertoldVdb/go-ais"
+    ais "github.com/MaritimeOptima/go-ais"
 )
     
 func main() {
@@ -79,8 +76,8 @@ package main
 
 import (
     "fmt"
-    "github.com/BertoldVdb/go-ais"
-    "github.com/BertoldVdb/go-ais/aisnmea"
+    "github.com/MaritimeOptima/go-ais"
+    "github.com/MaritimeOptima/go-ais/aisnmea"
 )
 
 func  main() {
