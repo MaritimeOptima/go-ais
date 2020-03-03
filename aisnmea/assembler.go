@@ -1,7 +1,9 @@
 package aisnmea
 
 import (
-	"github.com/klyve/go-ais"
+	"sync"
+
+	"github.com/MaritimeOptima/go-ais"
 	nmea "github.com/klyve/go-nmea"
 )
 
@@ -29,9 +31,31 @@ type vdmAssembler struct {
 	cleanupInterval uint64
 
 	msgMap map[uint32]*vdmAssemblyWork
+	mapmut sync.Mutex
+}
+
+func (v *vdmAssembler) putMsg(key uint32, msg *vdmAssemblyWork) {
+	v.mapmut.Lock()
+	defer v.mapmut.Unlock()
+	v.msgMap[key] = msg
+}
+
+func (v *vdmAssembler) getMsg(key uint32) (*vdmAssemblyWork, bool) {
+	v.mapmut.Lock()
+	defer v.mapmut.Unlock()
+	msg, ok := v.msgMap[key]
+	return msg, ok
+}
+
+func (v *vdmAssembler) deleteMsg(key uint32) {
+	v.mapmut.Lock()
+	defer v.mapmut.Unlock()
+	delete(v.msgMap, key)
 }
 
 func (v *vdmAssembler) cleanup() {
+	v.mapmut.Lock()
+	defer v.mapmut.Unlock()
 	for key, value := range v.msgMap {
 		if v.msgCounter >= value.expiryCounter {
 			delete(v.msgMap, key)
@@ -40,6 +64,8 @@ func (v *vdmAssembler) cleanup() {
 }
 
 func (v *vdmAssembler) bufferedMessages() int {
+	v.mapmut.Lock()
+	defer v.mapmut.Unlock()
 	result := 0
 	for _, k := range v.msgMap {
 		result += len(k.vdms)
@@ -87,7 +113,7 @@ func (v *vdmAssembler) process(vdm *nmea.VDMVDO) (VdmPacket, bool) {
 		key |= uint32(1) << 31
 	}
 
-	workMsg, ok := v.msgMap[key]
+	workMsg, ok := v.getMsg(key)
 	if !ok {
 		workMsg = &vdmAssemblyWork{}
 		workMsg.expiryCounter = v.msgCounter + v.cleanupInterval
@@ -99,7 +125,7 @@ func (v *vdmAssembler) process(vdm *nmea.VDMVDO) (VdmPacket, bool) {
 	allMsg := uint32(1)<<uint32(vdm.NumFragments) - 1
 
 	if !ok {
-		v.msgMap[key] = workMsg
+		v.putMsg(key, workMsg)
 	}
 
 	if len(workMsg.vdms) >= int(vdm.NumFragments) &&
@@ -116,7 +142,7 @@ func (v *vdmAssembler) process(vdm *nmea.VDMVDO) (VdmPacket, bool) {
 			}
 		}
 
-		delete(v.msgMap, key)
+		v.deleteMsg(key)
 
 		/* Full payload is assembled */
 		return VdmPacket{

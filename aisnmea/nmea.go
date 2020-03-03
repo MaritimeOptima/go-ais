@@ -4,8 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/klyve/go-ais"
-
+	"github.com/MaritimeOptima/go-ais"
 	nmea "github.com/klyve/go-nmea"
 )
 
